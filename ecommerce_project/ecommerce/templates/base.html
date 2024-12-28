@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}商品網站{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <!-- 頁面頂部導航 -->
+    <header>
+        <div class="container">
+            <h1><a href="/">電商平台</a></h1>
+            <nav>
+                <ul>
+                    <li><a href="/">首頁</a></li>
+
+                    {% if user.is_authenticated %}
+                        <li><a href="/profile/">歡迎, {{ user.username }}</a></li>  <!-- 顯示登入用戶名 -->
+                        <li><a href="{% url 'logout' %}">登出</a></li>
+                    {% else %}
+                        <li><a href="{% url 'login' %}">登入</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 主體內容區 -->
+    <main>
+        <div class="container">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </main>
+
+    <!-- 頁面底部 -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 電商平台. 版權所有.</p>
+        </div>
+    </footer>
+</body>
+
+</html>

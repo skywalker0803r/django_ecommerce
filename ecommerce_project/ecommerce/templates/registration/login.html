@@ -1,0 +1,16 @@
+<!-- templates/registration/login.html -->
+{% extends 'base.html' %}
+
+{% block title %}登入{% endblock %}
+
+{% block content %}
+    <div class="login-container">
+        <h2>請登入</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">登入</button>
+        </form>
+        <p>還沒有帳號？ <a href="{% url 'signup' %}">註冊</a></p>
+    </div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }} 詳情{% endblock %}
+
+{% block content %}
+<div class="product-detail-container">
+    <h2>{{ product.name }}</h2>
+    <p>價格：{{ product.price }} 元</p>
+    <p>描述：{{ product.description }}</p>
+    <p>庫存：{{ product.stock }} 件</p>
+
+    {% if product.image %}
+        <!-- 顯示商品圖片 -->
+        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+    {% else %}
+        <p>無圖片</p>
+    {% endif %}
+
+    <a href="/">返回商品列表</a>
+</div>
+{% endblock %}
