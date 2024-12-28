@@ -127,3 +127,9 @@ LOGIN_REDIRECT_URL = '/profile/'
 
 # 設置登出後跳轉的頁面
 LOGOUT_REDIRECT_URL = '/'
+
+# PayPal 配置
+PAYPAL_CLIENT_ID = 'AUyu6u-V30cYsBHn73O9NmM9NGxQ9zVi_4tyLnyr7c_yb1AMtSRTNHFwyGV3zMRvylHNhEj-QlisRzmS'
+PAYPAL_CLIENT_SECRET = 'ENWvCuduaXsCgXuhK5CkL21zZnSjCmlIjlLcKeJSJ6eqibpzY7OGThiINqb7paAjSdHOx9HsaWHxh5uJ'
+PAYPAL_MODE = 'sandbox'  # 'live' 為正式環境
+

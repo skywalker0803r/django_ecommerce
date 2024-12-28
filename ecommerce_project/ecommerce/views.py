@@ -4,6 +4,81 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login,logout
 from django.http import Http404
+import paypalrestsdk
+from django.conf import settings
+from django.contrib import messages
+
+# 初始化 PayPal SDK
+paypalrestsdk.configure({
+    "mode": settings.PAYPAL_MODE,
+    "client_id": settings.PAYPAL_CLIENT_ID,
+    "client_secret": settings.PAYPAL_CLIENT_SECRET,
+})
+
+@login_required
+def paypal_checkout(request):
+    # 建立 PayPal 支付對象
+    cart_items = Cart.objects.filter(user=request.user)
+    if not cart_items:
+        messages.warning(request, "您的購物車為空，無法結帳。")
+        return redirect('view_cart')
+    
+    total_price = sum(item.product.price * item.quantity for item in cart_items)
+
+    payment = paypalrestsdk.Payment({
+        "intent": "sale",
+        "payer": {"payment_method": "paypal"},
+        "redirect_urls": {
+            "return_url": request.build_absolute_uri('/paypal/execute/'),
+            "cancel_url": request.build_absolute_uri('/paypal/cancel/')
+        },
+        "transactions": [{
+            "item_list": {
+                "items": [
+                    {
+                        "name": item.product.name,
+                        "sku": str(item.product.id),
+                        "price": str(item.product.price),
+                        "currency": "USD",
+                        "quantity": item.quantity
+                    } for item in cart_items
+                ]
+            },
+            "amount": {"total": str(total_price), "currency": "USD"},
+            "description": "訂單支付"
+        }]
+    })
+    if payment.create():
+        # 清空購物車
+        cart_items.delete()  # 清空購物車中所有商品
+        for link in payment.links:
+            if link.rel == "approval_url":
+                # 導向 PayPal 支付頁面
+                return redirect(link.href)
+    else:
+        messages.error(request, "PayPal 支付創建失敗，請重試。")
+        return redirect('view_cart')
+
+@login_required
+def paypal_execute(request):
+    payment_id = request.GET.get('paymentId')
+    payer_id = request.GET.get('PayerID')
+
+    payment = paypalrestsdk.Payment.find(payment_id)
+    if payment.execute({"payer_id": payer_id}):
+        messages.success(request, "支付成功！")
+        # 清空購物車
+        Cart.objects.filter(user=request.user).delete()
+        return redirect('order_success')  # 顯示支付成功頁面
+    else:
+        messages.error(request, "支付失敗！")
+        return redirect('view_cart')
+
+@login_required
+def paypal_cancel(request):
+    # 用戶取消支付，顯示提示信息
+    messages.warning(request, "您已取消支付。")
+    return redirect('view_cart')
 
 # 商品列表視圖
 def product_list(request):
@@ -40,7 +115,6 @@ def user_logout(request):
 def view_cart(request):
     cart_items = Cart.objects.filter(user=request.user)
     total_price = sum(item.product.price * item.quantity for item in cart_items)
-    print(total_price,'11111111111111111')
     return render(request, 'cart/view_cart.html', {'cart_items': cart_items, 'total_price': total_price})
 
 @login_required
@@ -50,7 +124,7 @@ def add_to_cart(request, product_id):
     if not created:
         cart_item.quantity += 1  # 增加商品數量
         cart_item.save()
-    return redirect('view_cart')
+    return redirect('/')
 
 @login_required
 def remove_from_cart(request, product_id):

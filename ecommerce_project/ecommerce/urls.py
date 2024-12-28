@@ -14,4 +14,7 @@ urlpatterns = [
     path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'), #新增商品
     path('cart/remove/<int:product_id>/', views.remove_from_cart, name='remove_from_cart'), #移除商品
     path('checkout/', views.checkout, name='checkout'), #確認訂單
+    path('paypal/checkout/', views.paypal_checkout, name='paypal_checkout'),
+    path('paypal/execute/', views.paypal_execute, name='paypal_execute'),
+    path('paypal/cancel/', views.paypal_cancel, name='paypal_cancel'),
 ]
