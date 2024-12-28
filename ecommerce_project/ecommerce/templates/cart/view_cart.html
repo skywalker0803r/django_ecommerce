@@ -1,0 +1,38 @@
+<!-- templates/cart/view_cart.html -->
+{% extends 'base.html' %}
+
+{% block title %}購物車{% endblock %}
+
+{% block content %}
+<div class="cart-container">
+    <h2>購物車</h2>
+    <table class="cart-table">
+        <thead>
+            <tr>
+                <th>商品名稱</th>
+                <th>數量</th>
+                <th>價格 (元)</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.product.price }}</td>
+                    <td>
+                        <a href="{% url 'remove_from_cart' item.id %}" class="remove-btn">移除</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="cart-total">
+        <p>總計：<strong>{{ total_price }}</strong> 元</p>
+        <a href="{% url 'checkout' %}" class="checkout-btn">結帳</a>
+    </div>
+</div>
+{% endblock %}
+
+#按下移除按鈕沒有反應

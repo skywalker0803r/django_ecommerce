@@ -22,8 +22,15 @@
             {% endif %}
             
             <a href="{% url 'product_detail' product.id %}">查看詳情</a>
+            <!-- 加入購物車按鈕 -->
+            <form action="{% url 'add_to_cart' product.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit">加入購物車</button>
+            </form>
         </div>
     {% endfor %}
 </div>
 
 {% endblock %}
+
+# 新增加入購物車功能

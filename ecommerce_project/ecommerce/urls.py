@@ -10,4 +10,8 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(), name='login'),  # 登入
     path('logout/', views.user_logout, name='logout'),  # 自定義登出路由
     path('profile/', views.profile, name='profile'),  # 使用者個人資料頁面
+    path('cart/', views.view_cart, name='view_cart'), # 購物車
+    path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'), #新增商品
+    path('cart/remove/<int:product_id>/', views.remove_from_cart, name='remove_from_cart'), #移除商品
+    path('checkout/', views.checkout, name='checkout'), #確認訂單
 ]
