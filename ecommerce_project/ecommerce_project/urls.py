@@ -7,6 +7,12 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),  # Django 管理後台
     path('', include('ecommerce.urls')),  # 這行確保應用的 URL 被包含進來
-    static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
-    static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 ]
+
+urlpatterns = [
+    # 其他 URL 路由
+] +  static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns = [
+    # 其他 URL 路由
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
